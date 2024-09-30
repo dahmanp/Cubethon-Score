@@ -2,6 +2,8 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using TMPro;
+
 
 namespace Chapter.Observer
 {
@@ -9,40 +11,87 @@ namespace Chapter.Observer
     {
         public Transform player;
         public Text scoreText;
-        private FollowPlayer cam;
-        public bool oppositeScore;
-        public bool drunkScore;
+        private CamShook camShook;
+        public Camera cam;
+        private PNGPop ui;
+        public bool drunk = false;
+        public bool DrunkScore;
+        public bool pngScore;
+        public bool blockedScore;
+
+        public Vector3 offset;
+        public Vector3 _initialPosition;
+        public Quaternion _initialRotation;
+        public float rotationSpeed = 20f;
+
+        public GameObject lilPNG;
+        public GameObject blocker;
+
+        public float forwardForce = 2000f;
+        public float sidewaysForce = 500f;
 
         void Awake()
         {
-            cam = gameObject.AddComponent<FollowPlayer>();
+            camShook = gameObject.AddComponent<CamShook>();
+            ui = gameObject.AddComponent<PNGPop>();
         }
         // Update is called once per frame
         void OnEnable()
         {
-            if (cam)
-                Attach(cam);
+            if (camShook)
+                Attach(camShook);
+            if (ui)
+                Attach(ui);
+
+            _initialPosition = gameObject.transform.localPosition;
         }
 
         void OnDisable()
         {
-            if (cam)
-                Detach(cam);
+            if (camShook)
+                Detach(camShook);
+            if (ui)
+                Detach(ui);
         }
-
         void Update()
         {
             scoreText.text = player.position.z.ToString("0");
-            if (player.position.z >= 500 && !drunkScore)
+            if (player.position.z >= 300)
             {
-                drunkScore = true;
+                DrunkScore = true;
                 NotifyObservers();
             }
-            else if (player.position.z >= 200 && !oppositeScore)
+            if (player.position.z >= 200)
             {
-                oppositeScore = true;
+                pngScore = true;
+                NotifyObservers();
+            }
+            if (player.position.z >= 500)
+            {
+                blockedScore = true;
                 NotifyObservers();
             }
         }
+        public void Drunk()
+        {
+            if (DrunkScore && !drunk)
+            {
+                Vector3 newPosition = player.position + player.forward * 10.7f;
+                cam.transform.position = newPosition;
+                cam.transform.LookAt(player.position);
+            }
+        }
+
+        public void PNGTime()
+        {
+            lilPNG.SetActive(true);
+        }
+
+        public void blocked()
+        {
+            blocker.SetActive(true);
+            lilPNG.SetActive(false);
+        }
+
     }
 }

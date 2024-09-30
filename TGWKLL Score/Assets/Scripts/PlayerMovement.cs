@@ -2,54 +2,19 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace Chapter.Observer
-{
-    public class PlayerMovement : Subject
+
+
+    public class PlayerMovement : MonoBehaviour
     {
         public Rigidbody rb;
         public float forwardForce = 2000f;
         public float sidewaysForce = 500f;
-        private GameManager manager;
-        public bool Opposite;
-
-        void Awake()
-        {
-            manager = gameObject.AddComponent<GameManager>();
-        }
-
-        void OnEnable()
-        {
-            if (manager)
-                Attach(manager);
-        }
-        void OnDisable()
-        {
-            if (manager)
-                Detach(manager);
-        }
+        //private Score score;
+        private bool Opposite;
 
         void FixedUpdate()
         {
-            if (Opposite)
-            {
-                rb.AddForce(0, 0, forwardForce * Time.deltaTime);
-
-                if (Input.GetKey("d"))
-                {
-                    rb.AddForce(-sidewaysForce * Time.deltaTime, 0, 0, ForceMode.VelocityChange);
-                }
-
-                if (Input.GetKey("a"))
-                {
-                    rb.AddForce(sidewaysForce * Time.deltaTime, 0, 0, ForceMode.VelocityChange);
-                }
-
-                if (rb.position.y < -1f)
-                {
-                    FindObjectOfType<GameManager>().EndGame();
-                }
-            }
-            else
+            if (!Opposite)
             {
                 rb.AddForce(0, 0, forwardForce * Time.deltaTime);
 
@@ -70,10 +35,16 @@ namespace Chapter.Observer
             }
         }
 
-        public void ToggleOpposite()
+        /*public override void Notify(Subject subject)
         {
-            Opposite = !Opposite;
-            NotifyObservers();
-        }
+            if (!score)
+            {
+                score = subject.GetComponent<Score>();
+            }
+            if (score)
+            {
+                Opposite = score.OppositeScore;
+            }
+        }*/
     }
-}
+

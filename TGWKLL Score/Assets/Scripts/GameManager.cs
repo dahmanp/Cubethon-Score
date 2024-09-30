@@ -3,14 +3,12 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-namespace Chapter.Observer
-{
-    public class GameManager : Observer
+
+    public class GameManager : MonoBehaviour
     {
         bool gameHasEnded = false;
         public float restartDelay = 1f;
         public GameObject completeLevelUI;
-        private PlayerMovement movement;
         public bool Opposite;
 
         public void EndGame()
@@ -32,13 +30,6 @@ namespace Chapter.Observer
             completeLevelUI.SetActive(true);
         }
 
-        public override void Notify(Subject subject)
-        {
-            if (subject is PlayerMovement playerMovement)
-            {
-                movement = playerMovement;
-                Opposite = movement.Opposite;
-            }
-        }
+
     }
-}
+
